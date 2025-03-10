@@ -1,0 +1,37 @@
+- name: Add users to remote hosts
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ 'adm,sudo' if ansible_facts['os_family'] == 'Debian' else 'adm,wheel,systemd-journal' }}"
+    shell: /bin/bash
+    password: "{{ item.password }}"
+  with_items: "{{ users }}"
+
+- name: Set authorized keys for users
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ item.key }}"
+  with_items: "{{ users }}"
+
+- name: Replace sudoers file for Debian-based systems
+  template:
+    src: 'templates/sudoers.j2'
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    owner: root
+    group: root
+    mode: '0440'
+  when: ansible_facts['os_family'] == 'Debian'
+  with_items: "{{ users }}"
+
+- name: Replace sudoers file for CentOS
+  lineinfile:
+    line: '{{ item.name }} ALL=(ALL) NOPASSWD:ALL'
+    path: "/etc/sudoers.d/devops"
+    state: present
+    create: true
+    owner: root
+    group: root
+    mode: '0440'
+    validate: '/usr/sbin/visudo -cf %s'
+  when: ansible_facts['os_family'] == 'RedHat'
+  with_items: "{{ users }}"
