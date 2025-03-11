@@ -1,0 +1,6 @@
+- name: Разрешаем подключение к PostgreSQL с IP второго сервера
+  command: >
+    sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="{{ allowed_ip }}" port protocol="tcp" port="5432" accept'
+  when: ansible_facts['os_family'] == "RedHat"
+  notify: Restart firewalld
+

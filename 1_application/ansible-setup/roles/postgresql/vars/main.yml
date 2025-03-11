@@ -1,0 +1,9 @@
+postgres_user: "student"
+postgres_password: "123"
+allowed_ip: ""
+postgres_conf_path: >-
+  {%- if ansible_facts['os_family'] == "Debian" -%}
+    /etc/postgresql/15/main
+  {%- elif ansible_facts['os_family'] == "RedHat" -%}
+    /var/lib/pgsql/data
+  {%- endif -%}

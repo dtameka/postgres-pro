@@ -1,0 +1,11 @@
+- name: Устанавливаем зависимости Python для работы с PostgreSQL (Debian)
+  apt:
+    name: python3-psycopg2
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Устанавливаем зависимости Python для работы с PostgreSQL (CentOS)
+  yum:
+    name: python3-psycopg2
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"

@@ -1,0 +1,38 @@
+- name: Устанавливаем PostgreSQL Client (psql)
+  hosts: all
+  become: yes
+  gather_facts: yes
+  force_handlers: yes
+  vars:
+    postgres_user: "student"
+    postgres_password: "123"
+    target_ip: ""
+  tasks:
+    - name: Gather facts about the system
+      setup:
+
+    - name: Determine the operating system
+      set_fact:
+        os_family: "{{ ansible_facts['os_family'] }}"
+
+    - name: Устанавливаем psql (Debian)
+      apt:
+        name: postgresql-client
+        state: present
+        update_cache: yes
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Устанавливаем psql (CentOS)
+      yum:
+        name: postgresql
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Проверяем соединение с БД с помощью SELECT 1
+      shell: "PGPASSWORD={{ postgres_password }} psql -U student -h {{ target_ip }}  -d postgres -c 'SELECT 1'"
+      register: db_check
+      changed_when: false
+
+    - name: Выводим результат проверки БД
+      debug:
+        msg: "PostgreSQL ответил: {{ db_check.stdout }}"
