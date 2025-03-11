@@ -26,9 +26,16 @@ class PostgreSQLInstaller:
         try:
             subprocess.run(command, text=True, check=True)
             logger.info("Ansible успешно установил PostgreSQL!")
+            print("--------------------------------------------------")
+            print("Установка PostgreSQL завершилась успешно!")
+            print("--------------------------------------------------")
         except subprocess.CalledProcessError as e:
             logger.error("Ошибка установки PostgreSQL! Код: %s", e.returncode)
-            logger.error("Вывод ошибки: \n %s", e.stderr)
+            logger.error("Вывод ошибки: \n %s", e)
+            print("--------------------------------------------------")
+            print("Установка PostgreSQL провалилась!")
+            print("--------------------------------------------------")
+            return
 
         command = [
             "ansible-playbook",
@@ -44,6 +51,19 @@ class PostgreSQLInstaller:
         try:
             subprocess.run(command, text=True, check=True)
             logger.info("Ansible успешно установил Клиент psql на вторую машину!")
+            print("--------------------------------------------------")
+            print("Установка psql клиента завершилась успешно!")
+            print("--------------------------------------------------")
         except subprocess.CalledProcessError as e:
+            print("--------------------------------------------------")
+            print("Установка psql клиента провалилась!")
+            print("--------------------------------------------------")
             logger.error("Ошибка установки клиента psql! Код: %s", e.returncode)
-            logger.error("Вывод ошибки: \n %s", e.stderr)
+            logger.error("Вывод ошибки: \n %s", e)
+            return
+
+        logger.info("Установка PostgreSQL и Клиента psql завершена успешно!")
+        print("--------------------------------------------------")
+        print("Установка PostgreSQL и Клиента psql завершена успешно!")
+        print("--------------------------------------------------")
+        
