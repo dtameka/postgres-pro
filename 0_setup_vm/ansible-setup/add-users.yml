@@ -1,0 +1,15 @@
+- hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Gather facts about the system
+      setup:
+
+    - name: Determine the operating system
+      set_fact:
+        os_family: "{{ ansible_facts['os_family'] }}"
+
+    - name: Include common-users role
+      include_role:
+        name: common-users

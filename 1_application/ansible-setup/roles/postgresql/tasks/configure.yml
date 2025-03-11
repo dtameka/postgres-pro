@@ -1,0 +1,14 @@
+- name: Разрешаем внешние подключения в `postgresql.conf`
+  lineinfile:
+    path: "{{ postgres_conf_path }}/postgresql.conf"
+    regexp: "^#?listen_addresses"
+    line: "listen_addresses = '*'"
+    state: present
+  notify: Restart PostgreSQL
+
+- name: Добавляем правило для пользователя student в `pg_hba.conf`
+  lineinfile:
+    path: "{{ postgres_conf_path }}/pg_hba.conf"
+    line: "host all {{ postgres_user }} {{ allowed_ip }}/32 md5"
+    state: present
+  notify: Restart PostgreSQL

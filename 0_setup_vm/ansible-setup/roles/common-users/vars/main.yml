@@ -1,0 +1,4 @@
+users:
+  - name: user1
+    password:
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

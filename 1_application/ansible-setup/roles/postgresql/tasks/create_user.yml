@@ -1,0 +1,8 @@
+- name: Создаем пользователя PostgreSQL
+  postgresql_user:
+    name: "{{ postgres_user }}"
+    password: "{{ postgres_password }}"
+    encrypted: yes
+    role_attr_flags: CREATEDB
+  become: yes
+  become_user: postgres

@@ -1,0 +1,5 @@
+- import_tasks: install.yml
+- import_tasks: configure.yml
+- import_tasks: dependencies.yml
+- import_tasks: create_user.yml
+- import_tasks: open_firewall.yml
