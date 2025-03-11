@@ -1,0 +1,17 @@
+- name: Установка и настройка PostgreSQL
+  hosts: all
+  become: yes
+  gather_facts: yes
+  force_handlers: yes
+
+  tasks:
+    - name: Gather facts about the system
+      setup:
+
+    - name: Determine the operating system
+      set_fact:
+        os_family: "{{ ansible_facts['os_family'] }}"
+
+    - name: Include postgresql role
+      include_role:
+        name: postgresql

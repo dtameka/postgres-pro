@@ -1,0 +1,35 @@
+- name: Устанавливаем PostgreSQL на Debian/Ubuntu
+  apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+    state: present
+    update_cache: yes
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Устанавливаем PostgreSQL на CentOS/RHEL
+  yum:
+    name:
+      - postgresql-server
+      - postgresql-contrib
+    state: present
+    update_cache: yes
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Проверяем, инициализирован ли PostgreSQL (CentOS)
+  stat:
+    path: /var/lib/pgsql/data/PG_VERSION
+  register: pg_version_file
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Инициализируем PostgreSQL (только если БД не создана)
+  command: postgresql-setup --initdb
+  when:
+    - ansible_facts['os_family'] == "RedHat"
+    - not pg_version_file.stat.exists
+
+- name: Включаем и запускаем PostgreSQL
+  systemd:
+    name: postgresql
+    enabled: yes
+    state: started
